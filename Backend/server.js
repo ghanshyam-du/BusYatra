@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./src/config/database.config.js";
-// import authRoutes from "./src/routes/authRoutes.js";
+import authRoutes from "./src/routes/authRoutes.Routes.js";
 import errorHandler from "./src/middlewares/errorHandler.middlewares.js";
 
 dotenv.config();
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-// app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
