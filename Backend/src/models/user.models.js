@@ -1,10 +1,9 @@
-import mongoose from "mongoose"
-const bcrypt = require('bcryptjs');
-
+import mongoose from 'mongoose';
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"
 const userSchema = new mongoose.Schema({
   user_id: {
     type: String,
-    required: [true, 'User ID is required'],
     unique: true,
     trim: true
   },
@@ -32,14 +31,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters'],
-    select: false // Don't include password in queries by default
+    select: false
   },
   role: {
     type: String,
-    enum: {
-      values: ['CUSTOMER', 'TRAVELER', 'ADMIN'],
-      message: '{VALUE} is not a valid role'
-    },
+    enum: ['CUSTOMER', 'TRAVELER', 'ADMIN'],
     default: 'CUSTOMER'
   },
   gender: {
@@ -54,26 +50,25 @@ const userSchema = new mongoose.Schema({
   is_active: {
     type: Boolean,
     default: true
-  }
+  },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date
 }, {
-  timestamps: true 
+  timestamps: true
 });
 
 // Hash password before saving
 userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password')) {
+    return next();
+  }
   
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-// Method to compare passwords
-userSchema.methods.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
-
-// Generate user_id automatically
+// Generate user_id
 userSchema.pre('save', async function(next) {
   if (this.user_id) return next();
   
@@ -82,4 +77,41 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
-export default mongoose.model('User', userSchema);
+// Compare password
+userSchema.methods.comparePassword = async function(enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// Generate JWT Token
+userSchema.methods.getSignedJwtToken = function() {
+  return jwt.sign(
+    { 
+      user_id: this.user_id,
+      email: this.email,
+      role: this.role 
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRE || '7d' }
+  );
+};
+
+// Generate password reset token
+userSchema.methods.getResetPasswordToken = function() {
+  const crypto = require('crypto');
+  
+  // Generate token
+  const resetToken = crypto.randomBytes(20).toString('hex');
+
+  // Hash token and set to resetPasswordToken field
+  this.resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  // Set expire (10 minutes)
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
+};
+
+module.exports = mongoose.model('User', userSchema);
