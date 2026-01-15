@@ -1,74 +1,70 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
-
-const mongoose = require('mongoose');
-
-const travelerSchema = new mongoose.Schema(
-  {
-   
-    first_name: {
-      type: String,
-      required: true,
-      maxlength: 22,
-      trim: true,
-    },
-
-    last_name: {
-      type: String,
-      required: true,
-      maxlength: 22,
-      trim: true,
-    },
-
-    email_id: {
-      type: String,
-      required: true,
-      unique: true,
-      maxlength: 50,
-      lowercase: true,
-      trim: true,
-    },
-
-    phone_number: {
-      type: String,
-      unique: true,
-      minlength: 10,
-      maxlength: 10,
-    },
-
-    password: {
-      type: String,
-      required: true,
-      maxlength: 25,
-    },
-
-    gender: {
-      type: String,
-      enum: ['MALE', 'FEMALE', 'OTHER'],
-    },
-
-    dob: {
-      type: Date,
-    },
-
-    role: {
-      type: String,
-      enum: ['CUSTOMER', 'TRAVELER', 'ADMIN'],
-      default: 'CUSTOMER',
-    },
-
-    is_active: {
-      type: Boolean,
-      default: true,
-    },
+const travelerSchema = new mongoose.Schema({
+  traveler_id: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
   },
-  {
-    timestamps: {
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
+  user_id: {
+    type: String,
+    required: [true, 'User ID is required'],
+    ref: 'User'
+  },
+  company_name: {
+    type: String,
+    required: [true, 'Company name is required'],
+    trim: true,
+    maxlength: [200, 'Company name cannot exceed 200 characters']
+  },
+  business_contact: {
+    type: String,
+    required: [true, 'Business contact is required'],
+    match: [/^[0-9]{10}$/, 'Please enter a valid 10-digit contact number']
+  },
+  address: {
+    street: {
+      type: String,
+      required: [true, 'Street address is required']
     },
+    city: {
+      type: String,
+      required: [true, 'City is required']
+    },
+    state: {
+      type: String,
+      required: [true, 'State is required']
+    },
+    pincode: {
+      type: String,
+      required: [true, 'Pincode is required'],
+      match: [/^[0-9]{6}$/, 'Please enter a valid 6-digit pincode']
+    }
+  },
+  verification_status: {
+    type: String,
+    enum: ['PENDING', 'APPROVED', 'REJECTED'],
+    default: 'PENDING'
+  },
+  verification_date: {
+    type: Date
+  },
+  approved_by: {
+    type: String,
+    ref: 'Admin'
   }
-);
+}, {
+  timestamps: true
+});
 
-const traveler = mongoose.model("User", travelerSchema);
-export default traveler;
+
+travelerSchema.pre('save', async function(next) {
+  if (this.traveler_id) return next();
+  
+  const count = await this.constructor.countDocuments();
+  this.traveler_id = `TRV${String(count + 1).padStart(6, '0')}`;
+  next();
+});
+
+export default mongoose.model('Traveler', travelerSchema);

@@ -1,0 +1,37 @@
+{
+  "name": "busyatra-visual-guide",
+  "version": "1.0.0",
+  "description": "BusYatra - Complete ER Diagram & Data Flow Visualization",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite"
+  },
+  "keywords": [
+    "busyatra",
+    "bus-booking",
+    "er-diagram",
+    "database-design",
+    "react",
+    "visualization"
+  ],
+  "author": "Ghanshyam Dubey",
+  "license": "MIT",
+  "dependencies": {
+    "lucide-react": "^0.263.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "tailwindcss": "^3.3.2",
+    "vite": "^4.3.9"
+  }
+}
