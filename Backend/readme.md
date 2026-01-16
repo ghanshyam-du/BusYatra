@@ -1,74 +1,47 @@
-// ================================================================
-// BUSYATRA - COMPLETE AUTHENTICATION SYSTEM
-// ================================================================
-
-// ----------------------------------------------------------------
-// FILE 1: server.js (Main Entry Point)
-// ----------------------------------------------------------------
+this are the all test cases: 
 
 
-// ----------------------------------------------------------------
-// FILE 2: .env (Environment Variables)
-// ----------------------------------------------------------------
+✅ Testing Checklist
+Test all scenarios:
+Registration Tests
 
-/*
-Create a file named .env in the root directory:
+ Register with valid data → Success (201)
+ Register with duplicate email → Error (400)
+ Register with duplicate mobile → Error (400)
+ Register with invalid email format → Error (400)
+ Register with short password (< 6 chars) → Error (400)
+ Register without required fields → Error (400)
 
+Login Tests
 
+ Login with correct credentials → Success (200)
+ Login with wrong password → Error (401)
+ Login with non-existent email → Error (401)
+ Login without email → Error (400)
+ Login without password → Error (400)
 
-// ----------------------------------------------------------------
-// FILE 3: config/database.js (Already created, but here for reference)
-// ----------------------------------------------------------------
+Protected Route Tests
 
+ Access /api/auth/me without token → Error (401)
+ Access /api/auth/me with invalid token → Error (401)
+ Access /api/auth/me with valid token → Success (200)
 
+Update Profile Tests
 
+ Update with valid data → Success (200)
+ Update without token → Error (401)
+ Update with invalid mobile format → Error (400)
 
-// ----------------------------------------------------------------
-// FILE 4: middleware/errorHandler.js (Global Error Handler)
-// ----------------------------------------------------------------
+Change Password Tests
 
+ Change with correct current password → Success (200)
+ Change with wrong current password → Error (401)
+ Change without token → Error (401)
 
+Password Reset Tests
 
-// ----------------------------------------------------------------
-// FILE 5: middleware/auth.js (Authentication Middleware)
-// ----------------------------------------------------------------
-
-
-
-// ----------------------------------------------------------------
-// FILE 6: utils/asyncHandler.js (Async Error Handler Wrapper)
-// ----------------------------------------------------------------
-
-
-
-
-// ----------------------------------------------------------------
-// FILE 7: utils/errorResponse.js (Custom Error Class)
-// ----------------------------------------------------------------
-
-
-
-
-// ----------------------------------------------------------------
-// FILE 8: utils/sendTokenResponse.js (Send JWT Token in Response)
-// ----------------------------------------------------------------
-
-
-
-
-// ----------------------------------------------------------------
-// FILE 9: models/User.js (Updated with JWT Method)
-// ----------------------------------------------------------------
-
-// ----------------------------------------------------------------
-// FILE 10: controllers/authController.js (Authentication Logic)
-// ----------------------------------------------------------------
-
-// ----------------------------------------------------------------
-// FILE 11: routes/authRoutes.js (Authentication Routes)
-// ----------------------------------------------------------------
-
-
-// ----------------------------------------------------------------
-// FILE 12: package.json (Updated Dependencies)
-// ----------------------------------------------------------------
+ Forgot password with valid email → Success (200)
+ Forgot password with invalid email → Error (404)
+ Reset password with valid token → Success (200)
+ Reset password with expired token → Error (400)
+ Reset password with invalid token → Error (400)

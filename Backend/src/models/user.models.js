@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
+import crypto from "crypto"
 const userSchema = new mongoose.Schema({
   user_id: {
     type: String,
@@ -58,23 +59,23 @@ const userSchema = new mongoose.Schema({
 });
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function() {
   if (!this.isModified('password')) {
-    return next();
+    return ;
   }
   
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  next();
+  
 });
 
 // Generate user_id
-userSchema.pre('save', async function(next) {
-  if (this.user_id) return next();
+userSchema.pre('save', async function() {
+  if (this.user_id) return ;
   
   const count = await this.constructor.countDocuments();
   this.user_id = `USR${String(count + 1).padStart(6, '0')}`;
-  next();
+  
 });
 
 // Compare password
@@ -97,7 +98,7 @@ userSchema.methods.getSignedJwtToken = function() {
 
 // Generate password reset token
 userSchema.methods.getResetPasswordToken = function() {
-  const crypto = require('crypto');
+  
   
   // Generate token
   const resetToken = crypto.randomBytes(20).toString('hex');
