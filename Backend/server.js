@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./src/config/database.config.js";
 import authRoutes from "./src/routes/authRoutes.Routes.js";
 import errorHandler from "./src/middlewares/errorHandler.middlewares.js";
+import bookingRoutes from "./src/routes/bookingRoutes.Routes.js"
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

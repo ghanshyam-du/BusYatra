@@ -6,9 +6,9 @@ import {
   getMyBookings,
   getBookingDetails,
   cancelBooking
-} from ('../controllers/booking.Controller.js');
+} from '../controllers/booking.Controller.js';
 
-import { protect, authorize } from ('../middlewares/auth.middlewares.js');
+import { protect, authorize } from '../middlewares/auth.middlewares.js';
 
 const router = express.Router();
 
